@@ -1,35 +1,45 @@
 package com.example.intership_retrofit;
 
+import android.app.ActivityOptions;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.transition.Fade;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+import static com.example.intership_retrofit.Detailed_Activity.BUNDLE_KEY;
+
+public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMovieClickListener {
     private List<Model> movieData;
     private RecyclerView recyclerView;
-    private SwipeRefreshLayout swipeRefresh;
     private ProgressBar progressBar;
     private LinearLayoutManager linearLayoutManager;
     private MovieAdapter movieAdapter;
-    private Model movieModel;
+    private FilmsViewModel movieViewModel;
     private int visible_items, total_items, scroll_out_items;
     private Boolean isScrolling = false;
-
 
 
     @Override
@@ -37,9 +47,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findView();
+        linearLayoutManager=new LinearLayoutManager(this);
         setupRecyclerView();
+        movieViewModel= ViewModelProviders.of(this).get(FilmsViewModel.class);
+        movieViewModel.init();
 
+        movieViewModel.getMovieList().observe(this, new Observer<List<Model>>() {
+            @Override
+            public void onChanged(@Nullable List<Model> model) {
+                Log.e("SSS", "ON CHANGED");
+                setupRecyclerView();
+                movieAdapter.setMovieList((ArrayList<Model>) model);
 
+            }
+        });
 
 
     }
@@ -47,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
     public void findView()
     {
         recyclerView=findViewById(R.id.recycler_view);
-        swipeRefresh=findViewById(R.id.swiperefresh);
         progressBar=findViewById(R.id.progressBar_id);
     }
 
@@ -80,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+            movieAdapter.setOnMovieClickListener(this);
         } else {
             movieAdapter.notifyDataSetChanged();
         }
@@ -106,4 +127,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-}
+    @Override
+    public void onMovieClick(Model currentMovie, View viewroot) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(BUNDLE_KEY, currentMovie);
+        Intent intent = new Intent(this, Detailed_Activity.class);
+        intent.putExtra("A", bundle);
+        intent.putExtra("B", currentMovie.getImage());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setEnterTransition(new Fade(Fade.IN));
+            getWindow().setEnterTransition(new Fade(Fade.OUT));
+            ActivityOptions options = ActivityOptions
+                    .makeSceneTransitionAnimation(
+                            this,
+                            new Pair<View, String>(viewroot.findViewById(R.id.title_id), "text_trans"),
+                            new Pair<View, String>(viewroot.findViewById(R.id.image_id), "image_trans"));
+
+            startActivity(intent, options.toBundle());
+        } else {
+            startActivity(intent);
+        }
+    }
+    }
+

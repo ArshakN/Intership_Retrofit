@@ -17,7 +17,7 @@ import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
-
+        public OnMovieClickListener onMovieClickListener;
         private List<Model> movieList = new ArrayList<>();
         private Context context;
 
@@ -26,6 +26,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
             this.context = context;
         }
+
+    public void setOnMovieClickListener(OnMovieClickListener onMovieClickListener) {
+        this.onMovieClickListener = onMovieClickListener;
+
+    }
 
          public void setMovieList(ArrayList<Model> movieList) {
             this.movieList = movieList;
@@ -44,7 +49,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             Model result = movieList.get(i);
 
             movieViewHolder.title.setText(result.getTitle());
+            movieViewHolder.raiting.setText(String.valueOf(result.getRating()));
+            movieViewHolder.year.setText(String.valueOf(result.getReleaseYear()));
             Glide.with(context).load(result.getImage()).into(movieViewHolder.thumbnail);
+
 
        }
 
@@ -54,11 +62,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         }
 
         public void addAll(List<Model> list) {
-
             movieList.addAll(list);
             notifyDataSetChanged();
-
-
         }
 
         void add(Model result) {
@@ -66,18 +71,36 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             notifyItemChanged(movieList.size() - 1);
         }
 
+    public interface OnMovieClickListener {
+
+        void onMovieClick(Model currentNews, View viewroot);
+
+    }
 
         public class MovieViewHolder extends RecyclerView.ViewHolder {
 
             ImageView thumbnail;
             TextView title;
+            TextView raiting;
+            TextView year;
 
 
             public MovieViewHolder(@NonNull View itemView) {
                 super(itemView);
                 thumbnail = itemView.findViewById(R.id.image_id);
                 title = itemView.findViewById(R.id.title_id);
+                raiting = itemView.findViewById(R.id.raiting_id);
+                year = itemView.findViewById(R.id.year_id);
 
+
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Model movie = movieList.get(getLayoutPosition());
+                        onMovieClickListener.onMovieClick(movie, v);
+                    }
+                });
             }
         }
     }
+

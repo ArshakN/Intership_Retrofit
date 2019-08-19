@@ -1,11 +1,31 @@
 package com.example.intership_retrofit;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Model {
+public class Model implements Parcelable {
+
+    public static final Creator<Model> CREATOR = new Creator<Model>() {
+        @Override
+        public Model createFromParcel(Parcel in) {
+            return new Model(in);
+        }
+
+        @Override
+        public Model[] newArray(int i) {
+            return new Model[i];
+        }
+    };
+
+    public Model(Parcel in) {
+        title=in.readString();
+        image=in.readString();
+    }
 
     @SerializedName("title")
     @Expose
@@ -63,4 +83,19 @@ public class Model {
         this.genre = genre;
     }
 
-}
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(title);
+        parcel.writeString(image);
+
+
+    }
+
+
+
+    }
