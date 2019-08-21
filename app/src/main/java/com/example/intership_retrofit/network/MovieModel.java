@@ -1,4 +1,4 @@
-package com.example.intership_retrofit;
+package com.example.intership_retrofit.network;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,21 +8,21 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Model implements Parcelable {
+public class MovieModel implements Parcelable {
 
-    public static final Creator<Model> CREATOR = new Creator<Model>() {
+    public static final Creator<MovieModel> CREATOR = new Creator<MovieModel>() {
         @Override
-        public Model createFromParcel(Parcel in) {
-            return new Model(in);
+        public MovieModel createFromParcel(Parcel in) {
+            return new MovieModel(in);
         }
 
         @Override
-        public Model[] newArray(int i) {
-            return new Model[i];
+        public MovieModel[] newArray(int i) {
+            return new MovieModel[i];
         }
     };
 
-    public Model(Parcel in) {
+    public MovieModel(Parcel in) {
         title=in.readString();
         image=in.readString();
     }
@@ -93,9 +93,6 @@ public class Model implements Parcelable {
         parcel.writeString(title);
         parcel.writeString(image);
 
-
     }
 
-
-
-    }
+}

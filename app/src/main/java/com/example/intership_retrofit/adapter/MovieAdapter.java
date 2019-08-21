@@ -1,4 +1,4 @@
-package com.example.intership_retrofit;
+package com.example.intership_retrofit.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.intership_retrofit.network.MovieModel;
+import com.example.intership_retrofit.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,21 +20,19 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
         public OnMovieClickListener onMovieClickListener;
-        private List<Model> movieList = new ArrayList<>();
+        private List<MovieModel> movieList = new ArrayList<>();
         private Context context;
 
 
         public MovieAdapter(Context context) {
-
             this.context = context;
         }
 
     public void setOnMovieClickListener(OnMovieClickListener onMovieClickListener) {
         this.onMovieClickListener = onMovieClickListener;
-
     }
 
-         public void setMovieList(ArrayList<Model> movieList) {
+         public void setMovieList(ArrayList<MovieModel> movieList) {
             this.movieList = movieList;
             notifyDataSetChanged();
         }
@@ -46,14 +46,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         @Override
         public void onBindViewHolder(@NonNull MovieViewHolder movieViewHolder, int i) {
-            Model result = movieList.get(i);
+            MovieModel result = movieList.get(i);
 
             movieViewHolder.title.setText(result.getTitle());
             movieViewHolder.raiting.setText(String.valueOf(result.getRating()));
             movieViewHolder.year.setText(String.valueOf(result.getReleaseYear()));
             Glide.with(context).load(result.getImage()).into(movieViewHolder.thumbnail);
-
-
        }
 
         @Override
@@ -61,19 +59,19 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             return movieList.size();
         }
 
-        public void addAll(List<Model> list) {
+        public void addAll(List<MovieModel> list) {
             movieList.addAll(list);
             notifyDataSetChanged();
         }
 
-        void add(Model result) {
+        void add(MovieModel result) {
             movieList.add(result);
             notifyItemChanged(movieList.size() - 1);
         }
 
     public interface OnMovieClickListener {
 
-        void onMovieClick(Model currentNews, View viewroot);
+        void onMovieClick(MovieModel currentNews, View viewroot);
 
     }
 
@@ -96,7 +94,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Model movie = movieList.get(getLayoutPosition());
+                        MovieModel movie = movieList.get(getLayoutPosition());
                         onMovieClickListener.onMovieClick(movie, v);
                     }
                 });

@@ -1,5 +1,6 @@
-package com.example.intership_retrofit;
+package com.example.intership_retrofit.network;
 
+import com.example.intership_retrofit.network.MovieService;
 import com.google.gson.GsonBuilder;
 
 import retrofit2.Retrofit;

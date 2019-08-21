@@ -1,10 +1,9 @@
-package com.example.intership_retrofit;
+package com.example.intership_retrofit.view;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.transition.Fade;
 import android.util.Log;
 import android.util.Pair;
@@ -16,11 +15,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.intership_retrofit.network.MovieModel;
+import com.example.intership_retrofit.viewmodel.MovieViewModel;
+import com.example.intership_retrofit.R;
+import com.example.intership_retrofit.adapter.MovieAdapter;
+import com.example.intership_retrofit.network.ApiManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,15 +33,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.example.intership_retrofit.Detailed_Activity.BUNDLE_KEY;
+import static com.example.intership_retrofit.view.Detailed_Activity.BUNDLE_KEY;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMovieClickListener {
-    private List<Model> movieData;
+    private List<MovieModel> movieData;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private LinearLayoutManager linearLayoutManager;
     private MovieAdapter movieAdapter;
-    private FilmsViewModel movieViewModel;
+    private MovieViewModel movieViewModel;
     private int visible_items, total_items, scroll_out_items;
     private Boolean isScrolling = false;
 
@@ -49,15 +53,15 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
         findView();
         linearLayoutManager=new LinearLayoutManager(this);
         setupRecyclerView();
-        movieViewModel= ViewModelProviders.of(this).get(FilmsViewModel.class);
+        movieViewModel= ViewModelProviders.of(this).get(MovieViewModel.class);
         movieViewModel.init();
 
-        movieViewModel.getMovieList().observe(this, new Observer<List<Model>>() {
+        movieViewModel.getMovieList().observe(this, new Observer<List<MovieModel>>() {
             @Override
-            public void onChanged(@Nullable List<Model> model) {
+            public void onChanged(@Nullable List<MovieModel> model) {
                 Log.e("SSS", "ON CHANGED");
                 setupRecyclerView();
-                movieAdapter.setMovieList((ArrayList<Model>) model);
+                movieAdapter.setMovieList((ArrayList<MovieModel>) model);
 
             }
         });
@@ -107,10 +111,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
     }
 
     private void fillMovie() {
-        Call<List<Model>> call = ApiManager.getApiClient().getMovies();
-        call.enqueue(new Callback<List<Model>>() {
+        Call<List<MovieModel>> call = ApiManager.getApiClient().getMovies();
+        call.enqueue(new Callback<List<MovieModel>>() {
             @Override
-            public void onResponse(Call<List<Model>> call, Response<List<Model>> response) {
+            public void onResponse(Call<List<MovieModel>> call, Response<List<MovieModel>> response) {
                 if (response.body() != null && response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
                     movieData = response.body();
@@ -119,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
             }
 
             @Override
-            public void onFailure(Call<List<Model>> call, Throwable t) {
+            public void onFailure(Call<List<MovieModel>> call, Throwable t) {
                 Log.e("ARSH", "OnFailure", t);
             }
 
@@ -128,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
     }
 
     @Override
-    public void onMovieClick(Model currentMovie, View viewroot) {
+    public void onMovieClick(MovieModel currentMovie, View viewroot) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_KEY, currentMovie);
         Intent intent = new Intent(this, Detailed_Activity.class);

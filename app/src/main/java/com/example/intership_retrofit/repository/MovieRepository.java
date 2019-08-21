@@ -1,8 +1,12 @@
-package com.example.intership_retrofit;
+package com.example.intership_retrofit.repository;
 
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
+
+import com.example.intership_retrofit.network.MovieModel;
+import com.example.intership_retrofit.network.ApiManager;
+import com.example.intership_retrofit.network.MovieService;
 
 import java.util.List;
 
@@ -29,13 +33,13 @@ public class MovieRepository {
         return movieRepository;
     }
 
-    public MutableLiveData<List<Model>> getMovieList() {
-        final MutableLiveData<List<Model>> movieData = new MutableLiveData<>();
-        Call<List<Model>> call = movieService.getMovies();
-        call.enqueue(new Callback<List<Model>>() {
+    public MutableLiveData<List<MovieModel>> getMovieList() {
+        final MutableLiveData<List<MovieModel>> movieData = new MutableLiveData<>();
+        Call<List<MovieModel>> call = movieService.getMovies();
+        call.enqueue(new Callback<List<MovieModel>>() {
 
             @Override
-            public void onResponse(Call<List<Model>> call, Response<List<Model>> response) {
+            public void onResponse(Call<List<MovieModel>> call, Response<List<MovieModel>> response) {
                 if (response.body() == null) {
                     Log.e("SSS", "NULL BODY");
                 }
@@ -51,7 +55,7 @@ public class MovieRepository {
 
 
             @Override
-            public void onFailure(Call<List<Model>> call, Throwable t) {
+            public void onFailure(Call<List<MovieModel>> call, Throwable t) {
                 Log.e("SSS", "ON Failure");
             }
         });
