@@ -8,6 +8,4 @@ import retrofit2.http.GET;
 public interface MovieService {
     @GET("/json/movies.json")
     Call<List<MovieModel>> getMovies();
-
-
 }

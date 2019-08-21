@@ -23,8 +23,8 @@ public class MovieModel implements Parcelable {
     };
 
     public MovieModel(Parcel in) {
-        title=in.readString();
-        image=in.readString();
+        title = in.readString();
+        image = in.readString();
     }
 
     @SerializedName("title")

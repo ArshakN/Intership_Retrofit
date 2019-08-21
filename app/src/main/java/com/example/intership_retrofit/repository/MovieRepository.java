@@ -16,11 +16,8 @@ import retrofit2.Response;
 
 public class MovieRepository {
 
-
     private static MovieRepository movieRepository;
-
     private MovieService movieService;
-
 
     public MovieRepository() {
         movieService = ApiManager.getApiClient();
@@ -53,14 +50,11 @@ public class MovieRepository {
                 }
             }
 
-
             @Override
             public void onFailure(Call<List<MovieModel>> call, Throwable t) {
                 Log.e("SSS", "ON Failure");
             }
         });
         return movieData;
-
     }
-
 }

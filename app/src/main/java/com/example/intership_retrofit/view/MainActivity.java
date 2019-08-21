@@ -20,11 +20,11 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.intership_retrofit.network.MovieModel;
-import com.example.intership_retrofit.viewmodel.MovieViewModel;
 import com.example.intership_retrofit.R;
 import com.example.intership_retrofit.adapter.MovieAdapter;
 import com.example.intership_retrofit.network.ApiManager;
+import com.example.intership_retrofit.network.MovieModel;
+import com.example.intership_retrofit.viewmodel.MovieViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +51,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findView();
-        linearLayoutManager=new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(this);
         setupRecyclerView();
-        movieViewModel= ViewModelProviders.of(this).get(MovieViewModel.class);
+        movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
         movieViewModel.init();
 
         movieViewModel.getMovieList().observe(this, new Observer<List<MovieModel>>() {
@@ -62,21 +62,16 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
                 Log.e("SSS", "ON CHANGED");
                 setupRecyclerView();
                 movieAdapter.setMovieList((ArrayList<MovieModel>) model);
-
             }
         });
-
-
     }
 
-    public void findView()
-    {
-        recyclerView=findViewById(R.id.recycler_view);
-        progressBar=findViewById(R.id.progressBar_id);
+    public void findView() {
+        recyclerView = findViewById(R.id.recycler_view);
+        progressBar = findViewById(R.id.progressBar_id);
     }
 
-    public void setupRecyclerView()
-    {
+    public void setupRecyclerView() {
         if (movieAdapter == null) {
             movieAdapter = new MovieAdapter(MainActivity.this);
             recyclerView.setLayoutManager(linearLayoutManager);
@@ -91,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
                         isScrolling = true;
                     }
                 }
+
                 @Override
                 public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
@@ -100,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
                     if (isScrolling && visible_items + scroll_out_items == total_items) {
                         isScrolling = false;
                         progressBar.setVisibility(View.VISIBLE);
-                      fillMovie();
+                        fillMovie();
                     }
                 }
             });
@@ -126,18 +122,16 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
             public void onFailure(Call<List<MovieModel>> call, Throwable t) {
                 Log.e("ARSH", "OnFailure", t);
             }
-
         });
-
     }
 
     @Override
     public void onMovieClick(MovieModel currentMovie, View viewroot) {
+
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_KEY, currentMovie);
         Intent intent = new Intent(this, Detailed_Activity.class);
         intent.putExtra("A", bundle);
-        intent.putExtra("B", currentMovie.getImage());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setEnterTransition(new Fade(Fade.IN));
@@ -153,5 +147,5 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
             startActivity(intent);
         }
     }
-    }
+}
 

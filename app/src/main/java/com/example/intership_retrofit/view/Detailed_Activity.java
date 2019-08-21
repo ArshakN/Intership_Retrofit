@@ -32,9 +32,7 @@ public class Detailed_Activity extends AppCompatActivity {
         bundle = getIntent().getBundleExtra("A");
         currentMovie = bundle.getParcelable(BUNDLE_KEY);
         title.setText(currentMovie.getTitle());
-        String url = getIntent().getStringExtra("B");
-        currentMovie.setImage(url);
-        Glide.with(this).load(url).into(movieImage);
+        Glide.with(this).load(currentMovie.getImage()).into(movieImage);
 
     }
 
