@@ -71,7 +71,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     public interface OnMovieClickListener {
 
-        void onMovieClick(MovieModel currentNews, View viewroot);
+        void onMovieClick(MovieModel currentMovie, View viewroot);
 
     }
 
