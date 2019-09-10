@@ -21,7 +21,10 @@
             android:id="@+id/image_id"
             android:layout_width="100dp"
             android:layout_height="100dp"
-             />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp" />
 
         <TextView
             android:id="@+id/title_id"
@@ -87,7 +90,29 @@
             android:layout_toRightOf="@+id/year_id2"
             android:text="year" />
 
+        <ImageView
+            android:id="@+id/id_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title_id"
+            android:layout_marginStart="37dp"
+            android:layout_marginLeft="37dp"
+            android:layout_marginTop="19dp"
+            android:layout_toEndOf="@+id/raiting_id"
+            android:layout_toRightOf="@+id/raiting_id"
+            android:src="@drawable/ic_save_black_24dp" />
 
+        <ImageView
+            android:id="@+id/id_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/id_save"
+            android:layout_marginStart="33dp"
+            android:layout_marginLeft="33dp"
+            android:layout_marginTop="15dp"
+            android:layout_toEndOf="@+id/year_id"
+            android:layout_toRightOf="@+id/year_id"
+            app:srcCompat="@drawable/pdelete" />
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

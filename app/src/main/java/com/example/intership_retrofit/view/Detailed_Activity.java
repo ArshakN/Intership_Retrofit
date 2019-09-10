@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
-import com.example.intership_retrofit.network.MovieModel;
+import com.example.intership_retrofit.persistence.entity.Movie;
 import com.example.intership_retrofit.viewmodel.MovieViewModel;
 import com.example.intership_retrofit.R;
 
@@ -20,7 +20,7 @@ public class Detailed_Activity extends AppCompatActivity {
     private ImageView movieImage;
     private MovieViewModel movieViewModel;
     private Bundle bundle;
-    private MovieModel currentMovie;
+    private Movie currentMovie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

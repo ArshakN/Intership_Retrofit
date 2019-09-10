@@ -1,10 +1,14 @@
 package com.example.intership_retrofit.repository;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.intership_retrofit.network.MovieModel;
+import com.example.intership_retrofit.persistence.AppDatabase;
+import com.example.intership_retrofit.persistence.DBWrapper;
+import com.example.intership_retrofit.persistence.entity.Movie;
 import com.example.intership_retrofit.network.ApiManager;
 import com.example.intership_retrofit.network.MovieService;
 
@@ -18,6 +22,7 @@ public class MovieRepository {
 
     private static MovieRepository movieRepository;
     private MovieService movieService;
+    AppDatabase database = DBWrapper.getDatabase();
 
     public MovieRepository() {
         movieService = ApiManager.getApiClient();
@@ -30,13 +35,13 @@ public class MovieRepository {
         return movieRepository;
     }
 
-    public MutableLiveData<List<MovieModel>> getMovieList() {
-        final MutableLiveData<List<MovieModel>> movieData = new MutableLiveData<>();
-        Call<List<MovieModel>> call = movieService.getMovies();
-        call.enqueue(new Callback<List<MovieModel>>() {
+    public MutableLiveData<List<Movie>> getMovieList() {
+        final MutableLiveData<List<Movie>> movieData = new MutableLiveData<>();
+        Call<List<Movie>> call = movieService.getMovies();
+        call.enqueue(new Callback<List<Movie>>() {
 
             @Override
-            public void onResponse(Call<List<MovieModel>> call, Response<List<MovieModel>> response) {
+            public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
                 if (response.body() == null) {
                     Log.e("SSS", "NULL BODY");
                 }
@@ -51,10 +56,35 @@ public class MovieRepository {
             }
 
             @Override
-            public void onFailure(Call<List<MovieModel>> call, Throwable t) {
+            public void onFailure(Call<List<Movie>> call, Throwable t) {
                 Log.e("SSS", "ON Failure");
             }
         });
         return movieData;
     }
+
+    public void saveMovie(final Movie movie) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                database.movieDao().insert(movie);
+                return null;
+            }
+        }.execute();
+    }
+
+    public void deleteMovie(final Movie movie)
+    {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                database.movieDao().delete(movie);
+                return null;
+            }
+        }.execute();
+
+    }
+
+    public LiveData<List<Movie>> getMovie() {
+        return database.movieDao().getAll();}
 }

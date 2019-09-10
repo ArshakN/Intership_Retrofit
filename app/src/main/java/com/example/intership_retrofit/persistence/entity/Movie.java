@@ -1,30 +1,56 @@
-package com.example.intership_retrofit.network;
+package com.example.intership_retrofit.persistence.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class MovieModel implements Parcelable {
+@Entity
+public class Movie implements Parcelable {
 
-    public static final Creator<MovieModel> CREATOR = new Creator<MovieModel>() {
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
         @Override
-        public MovieModel createFromParcel(Parcel in) {
-            return new MovieModel(in);
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
         }
 
         @Override
-        public MovieModel[] newArray(int i) {
-            return new MovieModel[i];
+        public Movie[] newArray(int i) {
+            return new Movie[i];
         }
     };
 
-    public MovieModel(Parcel in) {
+    public Movie(Parcel in) {
         title = in.readString();
         image = in.readString();
+    }
+
+    public Movie(String title, String image, Double rating, Integer releaseYear) {
+        this.title = title;
+        this.image = image;
+        this.rating = rating;
+        this.releaseYear = releaseYear;
+
+    }
+
+    @PrimaryKey(autoGenerate = true)
+    @NonNull
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @SerializedName("title")
@@ -39,6 +65,7 @@ public class MovieModel implements Parcelable {
     @SerializedName("releaseYear")
     @Expose
     private Integer releaseYear;
+    @Ignore
     @SerializedName("genre")
     @Expose
     private List<String> genre = null;

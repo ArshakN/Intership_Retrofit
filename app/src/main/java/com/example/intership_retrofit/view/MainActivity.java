@@ -20,10 +20,11 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.intership_retrofit.App;
 import com.example.intership_retrofit.R;
 import com.example.intership_retrofit.adapter.MovieAdapter;
 import com.example.intership_retrofit.network.ApiManager;
-import com.example.intership_retrofit.network.MovieModel;
+import com.example.intership_retrofit.persistence.entity.Movie;
 import com.example.intership_retrofit.viewmodel.MovieViewModel;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ import retrofit2.Response;
 import static com.example.intership_retrofit.view.Detailed_Activity.BUNDLE_KEY;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMovieClickListener {
-    private List<MovieModel> movieData;
+    private List<Movie> movieData;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private LinearLayoutManager linearLayoutManager;
@@ -52,18 +53,30 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
         setContentView(R.layout.activity_main);
         findView();
         linearLayoutManager = new LinearLayoutManager(this);
-        setupRecyclerView();
         movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
         movieViewModel.init();
+        setupRecyclerView();
 
-        movieViewModel.getMovieList().observe(this, new Observer<List<MovieModel>>() {
+        if (App.isNetworkEnabled){
+        movieViewModel.getMovieList().observe(this, new Observer<List<Movie>>() {
             @Override
-            public void onChanged(@Nullable List<MovieModel> model) {
+            public void onChanged(@Nullable List<Movie> model) {
                 Log.e("SSS", "ON CHANGED");
-                setupRecyclerView();
-                movieAdapter.setMovieList((ArrayList<MovieModel>) model);
+                //setupRecyclerView();
+                movieAdapter.setMovieList((ArrayList<Movie>) model);
             }
         });
+    }
+    else {
+        movieViewModel.getSaveMovieList().observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(List<Movie> movies) {
+                //setupRecyclerView();
+                movieAdapter.setMovieList((ArrayList<Movie>) movies);
+            }
+        });
+
+        }
     }
 
     public void findView() {
@@ -73,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
 
     public void setupRecyclerView() {
         if (movieAdapter == null) {
-            movieAdapter = new MovieAdapter(MainActivity.this);
+            movieAdapter = new MovieAdapter(MainActivity.this,movieViewModel);
             recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.setAdapter(movieAdapter);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -107,10 +120,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
     }
 
     private void fillMovie() {
-        Call<List<MovieModel>> call = ApiManager.getApiClient().getMovies();
-        call.enqueue(new Callback<List<MovieModel>>() {
+        Call<List<Movie>> call = ApiManager.getApiClient().getMovies();
+        call.enqueue(new Callback<List<Movie>>() {
             @Override
-            public void onResponse(Call<List<MovieModel>> call, Response<List<MovieModel>> response) {
+            public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
                 if (response.body() != null && response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
                     movieData = response.body();
@@ -119,14 +132,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
             }
 
             @Override
-            public void onFailure(Call<List<MovieModel>> call, Throwable t) {
+            public void onFailure(Call<List<Movie>> call, Throwable t) {
                 Log.e("ARSH", "OnFailure", t);
             }
         });
     }
 
     @Override
-    public void onMovieClick(MovieModel currentMovie, View viewroot) {
+    public void onMovieClick(Movie currentMovie, View viewroot) {
 
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_KEY, currentMovie);
